@@ -26,7 +26,7 @@ function RenderDish({dish}){
         }
     }
 
-function RenderComments({comments}){
+    function RenderComments({comments, addComment, dishId}){
        
        
         const cmt = comments.map(comment => {
@@ -52,7 +52,7 @@ function RenderComments({comments}){
                 <ul className="list-unstyled">
                     {cmt}
                 </ul>
-                <CommentForm />
+                <CommentForm dishId={dishId} addComment={addComment} />
             </div>
         );
     }
@@ -84,7 +84,10 @@ function RenderComments({comments}){
                 </div>    
                 <div className="row">
                     <RenderDish dish ={props.dish} />
-                    <RenderComments comments ={props.comments} />
+                    <RenderComments comments ={props.comments} 
+                       addComment={props.addComment}
+                       dishId={props.dish.id}
+                     />
                 </div>
                 
                 
@@ -113,8 +116,8 @@ function RenderComments({comments}){
         }
 
         handleSubmit(values){
-            console.log("Current state is: " + JSON.stringify(values))
-            alert("Current state is: " + JSON.stringify(values));
+            this.toggleModal();
+            this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
         }
 
         toggleModal(){
@@ -138,7 +141,7 @@ function RenderComments({comments}){
                             Submit Comment
                         </ModalHeader>
                         <ModalBody>
-                            <LocalForm>
+                            <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
                                 <Row className="form-group">
                                     <Label htmlFor=".rating" md={5}>Rating</Label>
                                     <Col md={12}>
@@ -170,14 +173,14 @@ function RenderComments({comments}){
                                     </Col>
                                 </Row>
                                 <Row className="form-group">
-                                    <Label htmlFor=".cmnt" md={5}>Comment</Label>
+                                    <Label htmlFor=".comment" md={5}>Comment</Label>
                                     <Col md={12}>
-                                        <Control.textarea model=".cmnt" name="cmnt" rows="6" className="form-control" 
+                                        <Control.textarea model=".comment" name="comment" rows="6" className="form-control" 
                                         validators={{required}}/>
 
                                         <Errors 
                                         className="text-danger"
-                                        model=".cmt"
+                                        model=".comment"
                                         show="touched"
                                         messages={{
                                             required: 'Required'
